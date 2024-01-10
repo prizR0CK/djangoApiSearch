@@ -25,9 +25,9 @@ SECRET_KEY = 'django-insecure-1pgqk&dp4o9oz1_3+e2(t@x69m4^u8ti)8clc_#tt8_+$-jpcy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-INTERNAL_IPS = ['127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '103.45.247.96']
+INTERNAL_IPS = ['127.0.0.1', '103.45.247.96']
+CSRF_TRUSTED_ORIGINS = ['http://103.45.247.96']
 
 
 # Application definition
@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'scraping.middleware.SaveClientsMiddleware',
 ]
 
 ROOT_URLCONF = 'djangoApiSearch.urls'
