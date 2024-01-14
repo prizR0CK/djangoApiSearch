@@ -1,6 +1,6 @@
 import aiohttp
 from bs4 import BeautifulSoup
-from .sites import headers, URL_allo, URL_eldorado, eldorado_main, URL_foxtrot, foxtrot_main
+from .sites import headers, URL_eldorado, eldorado_main, URL_stilus, stilus_main, URL_moyo, moyo_main
 
 
 async def req_body(url):
@@ -8,24 +8,6 @@ async def req_body(url):
         async with session.get(url) as resp:
             body = await resp.text()
             return body
-
-
-async def parse_allo(search):
-    rq_allo = await req_body(URL_allo + search)
-    bs_allo = BeautifulSoup(rq_allo, 'html5lib')
-    try:
-        good_allo = bs_allo.find("div", {"class": "products-layout__item"})
-
-        name_a = good_allo.find("a", {"class": "product-card__title"})
-        price_a = good_allo.find("div", {"class": "v-pb__cur discount"}).find("span", {"class": "sum"}).text
-
-        allo_list = ["Allo", name_a["href"], name_a["title"], price_a + " ₴"]
-
-        return allo_list
-    except Exception as error:
-        print(error)
-        allo_list = ["Allo", "-", "I'm afraid we don't have it", "-"]
-        return allo_list
 
 
 async def parse_eldorado(search):
@@ -47,25 +29,41 @@ async def parse_eldorado(search):
         return eldorado_list
 
 
-async def parse_foxtrot(search):
-    rq_fox = await req_body(URL_foxtrot + search)
-    bs_fox = BeautifulSoup(rq_fox, 'html5lib')
+async def parse_stilus(search):
+    rq_stilus = await req_body(URL_stilus + search)
+    bs_stilus = BeautifulSoup(rq_stilus, 'html5lib')
     try:
-        good_fox = bs_fox.find("div", {"class": "card__body"})
-
-        name_fox = good_fox.find("a", {"class": "card__title"})
-        price_fox = good_fox.find("div", {"class": "card-price"}).text.strip()
-
-        foxtrot_list = ["Foxtrot", foxtrot_main + name_fox["href"], name_fox["title"], price_fox]
-        return foxtrot_list
+        good_stilus = bs_stilus.find("a", {"class": "name-block"})
+        price_stilus = bs_stilus.find("div", {"class": "regular-price"}).text
+        stilus_list = ["Stilus", stilus_main + good_stilus["href"], good_stilus["title"], price_stilus]
+        return stilus_list
     except Exception as error:
         print(error)
-        foxtrot_list = ["Foxtrot", "-", "I'm afraid we don't have it", "-"]
-        return foxtrot_list
-
-
+        stilus_list = ["Stilus", "-", "I'm afraid we don't have it", "-"]
+        return stilus_list
+        
+        
+async def parse_moyo(search):
+    rq_moyo = await req_body(URL_moyo + search)
+    bs_moyo = BeautifulSoup(rq_moyo, 'html5lib')
+    try:
+        good_moyo = bs_moyo.find("a", {"class": "product-item_name gtm-link-product"})
+        price_moyo = bs_moyo.find("div", {"class": "product-item_price_current"}).text.strip()
+        moyo_list = ["Moyo",
+                     moyo_main + good_moyo["href"],
+                     good_moyo.text.strip(),
+                     price_moyo.replace(" ", "")]
+        return moyo_list
+    except Exception as error:
+        print(error)
+        moyo_list = ["Moyo", "-", "I'm afraid we don't have it", "-"]
+        return moyo_list
+        
+        
 async def main(client_search):
-    dict_goods = {"allo": await parse_allo(client_search),
-                  "eldorado": await parse_eldorado(client_search),
-                  "foxtrot": await parse_foxtrot(client_search)}
+    dict_goods = {
+        "eldorado": await parse_eldorado(client_search),
+        "Stilus": await parse_stilus(client_search),
+        "Moyo": await parse_moyo(client_search)
+    }
     return dict_goods
