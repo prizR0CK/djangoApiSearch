@@ -33,8 +33,8 @@ async def parse_eldorado(search):
     try:
         price_el = good_el.find("span", {"class": "ui-library-subtitle1Bold-399e"}).text + "₴"
     except Exception as e:
+        price_el = "Availability - 0"
         print(e)
-        price_el = "I'm afraid we don't have it"
     eldorado_list = ["Eldorado", eldorado_main + link_el, name_el, price_el]
     return eldorado_list
 
@@ -61,7 +61,7 @@ async def parse_stilus(search):
         price_stilus = bs_stilus.find("div", {"class": "regular-price"}).text
     except Exception as e:
         print(e)
-        price_stilus = "I'm afraid we don't have it"
+        price_stilus = "Availability - 0"
     stilus_list = ["Stilus", stilus_main + link_stilus, name_stilus, price_stilus]
     return stilus_list
         
@@ -88,7 +88,7 @@ async def parse_moyo(search):
         price_moyo = bs_moyo.find("div", {"class": "product-item_price_current"}).text.strip().replace(" ", "")
     except Exception as e:
         print(e)
-        price_moyo = "I'm afraid we don't have it"
+        price_moyo = "Availability - 0"
     moyo_list = ["Moyo", moyo_main + link_moyo, name_moyo, price_moyo]
     return moyo_list
         
